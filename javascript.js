@@ -1,71 +1,61 @@
-const container = document.querySelector('.container');
 const buttons = document.querySelectorAll('button');
+const playerText = document.querySelector(".playerResult");
+const compText = document.querySelector(".compResult");
+const results = document.querySelector(".result");
+const finalResults = document.querySelector("#results");
+let compScore = 0;
+let playerScore = 0;
+let player;
+let computer;
+
+buttons.forEach(button => button.addEventListener("click", () =>{
+    player = button.textContent;
+    computer = computerPlay();
+    playerText.textContent =`Player: ${player}`;
+    compText.textContent = `Computer: ${computer}`;
+    results.textContent = `${playRound(player, computer)}`;
+}))
 
 // Write a function that chooses between rock, paper and scissors randomly
 function computerPlay(){
-    let choice = ['rock', 'paper', 'scissors'];
+    let choice = ['Rock', 'Paper', 'Scissors'];
     let randomIndex = Math.floor(Math.random()*choice.length);
     return choice[randomIndex];
 }
 
 // A function that initiates a round or rock, paper, scissors and returns the result/winner
-function playRound(playerSelection){
-    let computerSelection = computerPlay();
-    let result = "x";
-    if((playerSelection == 'rock' && computerSelection == 'rock') 
-    || (playerSelection == 'paper' && computerSelection == 'paper')
-    || (playerSelection == 'scissors' && computerSelection == 'scissors')){
-        result = 'It\'s a tie';
+function playRound(player, computer){
+    const compScoreBoard = document.querySelector(".compScore");
+    const playerScoreBoard = document.querySelector(".playerScore");
+    if(player == computer){
+        finalResults.textContent = 'Draw';
     }
-    else if((playerSelection == 'rock' && computerSelection == 'paper') 
-    || (playerSelection == 'scissors' && computerSelection == 'rock'
-    || (playerSelection == 'paper' && computerSelection == 'scissors'))){
-        result = 'You lose'
+    else if((player === 'Rock' && computer === 'Paper') 
+    || (player === 'Scissors' && computer === 'Rock')
+    || (player === 'Paper' && computer === 'Scissors')){
+       compScore++;
+       finalResults.textContent ='You lose';
+       compScoreBoard.textContent = `Computer Score: ${compScore}`;
     }
-    else  if((playerSelection == 'rock' && computerSelection == 'scissors') 
-    || (playerSelection == 'paper' && computerSelection == 'rock')
-    || (playerSelection == 'scissors' && computerSelection == 'paper')){
-        result = 'You win';
+    else  if((player === 'Rock' && computer === 'Scissors') 
+    || (player === 'Paper' && computer === 'Rock')
+    || (player === 'Scissors' && computer === 'Paper')){
+       playerScore++;
+       finalResults.textContent = 'You win';
+       playerScoreBoard.textContent = `Player Score: ${playerScore}`
     }
-
-    document.getElementById("results").innerHTML = result;
-    return
 }
 
-// A function game that records the winner of each round and outputs the winner at the end
-function game(result){
-    let playerScore = 0;
-    let compScore = 0;
-    let finalResult = '';
-    for(let i=0; i<5; i++){
-        if(result ==='It\'s a tie'){
-            compScore = compScore;
-            playerScore = playerScore;
-        }
-       else if(result == 'You lost'){
-           compScore += 1;
-        }
-        else if(result == 'You win' ){
-            playerScore += 1;
-        }
+function game(){
+    playRound(player, computer)
+    if(compScore == 5 ){
+        const finalResult = document.querySelector("finalResults");
+        finalResult.textContent = 'Computer wins the game';
     }
-    if(compScore > playerScore){
-       finalResult = `You lost: Computer Score ${compScore}, Player Score ${playerScore}`;
+    else if(playerScore == 5){
+        const finalResult = document.querySelector("finalResults");
+        finalResult.textContent = 'Player wins the game';
     }
-    else if(compScore < playerScore){
-        finalResult = `You won: Computer Score ${compScore}, Player Score ${playerScore}`;
-    }
-    else if(playerScore == compScore){
-        finalResult = `You tied: Computer Score ${compScore}, Player Score ${playerScore}`;
-    }
-
-    document.getElementById("results").innerHTML = finalResult;
-    return
 }
 
-buttons.forEach(button =>{
-    button.addEventListener('click', function(){
-       let result = playRound(button.value);
-        game(result);
-    })
-})
+game()
